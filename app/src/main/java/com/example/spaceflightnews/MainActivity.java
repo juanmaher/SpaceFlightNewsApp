@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spaceflightnews.data.Article;
 import com.example.spaceflightnews.ui.ArticleAdapter;
@@ -21,6 +23,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 1. Configurar RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ArticleAdapter();
+        recyclerView.setAdapter(adapter);
 
         // 2. Configurar búsqueda
         SearchView searchView = findViewById(R.id.searchView);
@@ -76,8 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void observeAllArticles() {
         viewModel.getAllArticles().observe(this, articles -> {
-            adapter.setArticles(articles);
+            if (articles != null) {
+                adapter.setArticles(articles);
+            }
         });
     }
 }
-
