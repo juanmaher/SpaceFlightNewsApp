@@ -2,7 +2,9 @@ package com.example.spaceflightnews;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
@@ -30,22 +32,44 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ArticleAdapter();
         recyclerView.setAdapter(adapter);
-        /*adapter.setOnItemClickListener(article -> {
-            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-            intent.putExtra("ARTICLE_ID", article.id);
-            startActivity(intent);
-        });*/
-
-        adapter.setOnItemClickListener(article -> {
-            ArticleDetailSheet sheet = ArticleDetailSheet.newInstance(article.id);
-            sheet.show(getSupportFragmentManager(), "detail_sheet");
-        });
+        setupAdapterClick();
 
         viewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
         showRecentArticles();
         viewModel.sync();
 
         setupSearchView();
+    }
+
+    public void showList() {
+        findViewById(R.id.main_list_container).setVisibility(View.VISIBLE);
+        findViewById(R.id.fragment_container).setVisibility(View.GONE);
+    }
+
+    private void setupAdapterClick() {
+        adapter.setOnItemClickListener(article -> {
+            // Si ya hay un fragmento mostrándose, no hagas nada
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) return;
+
+            // 1. Ocultar la lista (opcional, el fragmento la tapará)
+            findViewById(R.id.main_list_container).setVisibility(View.GONE);
+            findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+
+            // 2. Crear instancia del fragmento pasándole el ID
+            ArticleDetailFragment detailFragment = ArticleDetailFragment.newInstance(article.id);
+
+            // 3. Transacción con animación fluida
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right,  // Animación al entrar
+                            R.anim.fade_out,        // Animación de la lista al salir
+                            R.anim.fade_in,         // Animación de la lista al volver
+                            R.anim.slide_out_right  // Animación del fragment al salir
+                    )
+                    .replace(R.id.fragment_container, detailFragment)
+                    .addToBackStack(null) // Vital para que el botón 'Atrás' funcione
+                    .commit();
+        });
     }
 
     private void setupSearchView() {
