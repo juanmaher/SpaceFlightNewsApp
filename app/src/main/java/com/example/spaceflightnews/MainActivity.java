@@ -3,6 +3,8 @@ package com.example.spaceflightnews;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,6 +76,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSearchView() {
         SearchView searchView = findViewById(R.id.searchView);
+
+        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        if (searchEditText != null) {
+            searchEditText.setTextColor(getResources().getColor(R.color.text_dark_blue));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.text_soft_gray));
+        }
+
+        searchView.setOnClickListener(v -> {
+            searchView.setIconified(false);
+            searchView.requestFocus();
+        });
+
+        ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
+        if (searchIcon != null) {
+            searchIcon.setColorFilter(getResources().getColor(R.color.text_soft_gray));
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -92,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void showRecentArticles() {
         // Removemos el observador anterior para que no se mezclen las listas

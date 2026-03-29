@@ -23,6 +23,6 @@ public interface ArticleDao {
     LiveData<Article> getArticleById(int id);
 
     // Solo los 10 más recientes para la pantalla principal
-    @Query("SELECT * FROM articles ORDER BY published_at DESC LIMIT 3")
+    @Query("SELECT * FROM articles ORDER BY published_at DESC LIMIT 10")
     LiveData<List<Article>> getRecentArticles();
 }

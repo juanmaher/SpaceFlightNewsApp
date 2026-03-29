@@ -1,15 +1,18 @@
 package com.example.spaceflightnews;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -55,6 +58,12 @@ public class ArticleDetailFragment extends Fragment {
 
         // El Owner asegura que esto muera con el fragmento
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+        Drawable backArrow = toolbar.getNavigationIcon();
+        if (backArrow != null) {
+            backArrow.setTint(ContextCompat.getColor(requireContext(), R.color.text_soft_gray));
+            toolbar.setNavigationIcon(backArrow);
+        }
 
         int articleId = getArguments().getInt("ARTICLE_ID");
         ArticleViewModel viewModel = new ViewModelProvider(requireActivity()).get(ArticleViewModel.class);
