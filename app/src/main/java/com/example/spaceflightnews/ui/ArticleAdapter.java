@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spaceflightnews.R;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
-    private List<Article> articles = new ArrayList<>();
+    private final List<Article> articles = new ArrayList<>();
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -51,9 +52,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         return articles.size();
     }
 
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
-        notifyDataSetChanged(); // En una app real, mejor usar DiffUtil
+    public void setArticles(List<Article> newArticles) {
+        // Calculamos la diferencia entre la lista vieja y la nueva
+        ArticleDiffCallback diffCallback = new ArticleDiffCallback(this.articles, newArticles);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        // Actualizamos la referencia de la lista
+        this.articles.clear();
+        this.articles.addAll(newArticles);
+
+        // Despachamos solo los cambios necesarios al Adapter
+        diffResult.dispatchUpdatesTo(this);
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {

@@ -33,6 +33,10 @@ public class ArticleViewModel extends AndroidViewModel {
         return repository.getArticleById(id);
     }
 
+    public LiveData<List<Article>> getRecentArticles() {
+        return repository.getRecentArticles(); // Llama al DAO con LIMIT 10
+    }
+
     public void sync() {
         repository.syncArticles();
     }

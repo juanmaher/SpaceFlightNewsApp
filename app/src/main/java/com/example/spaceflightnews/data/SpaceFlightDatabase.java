@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 @Database(entities = {Article.class}, version = 1)
 public abstract class SpaceFlightDatabase extends RoomDatabase {
 
-    // Room implementará este método por nosotros
     public abstract ArticleDao articleDao();
 
     private static java.util.concurrent.ExecutorService databaseWriteExecutor =
@@ -17,7 +16,6 @@ public abstract class SpaceFlightDatabase extends RoomDatabase {
 
     private static volatile SpaceFlightDatabase INSTANCE;
 
-    // Usamos el patrón Singleton para no abrir la DB varias veces
     public static SpaceFlightDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (SpaceFlightDatabase.class) {

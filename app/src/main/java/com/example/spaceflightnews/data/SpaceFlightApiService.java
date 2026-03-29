@@ -3,6 +3,7 @@ package com.example.spaceflightnews.data;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface SpaceFlightApiService {
 
@@ -11,5 +12,8 @@ public interface SpaceFlightApiService {
 
     @GET("articles/{id}/")
     Call<Article> getArticleById(@Path("id") int id);
+
+    @GET("articles/")
+    Call<ArticleResponse> getArticles(@Query("search") String searchTerm);
 }
 

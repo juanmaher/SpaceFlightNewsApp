@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,75 +19,77 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private ArticleViewModel viewModel;
     private ArticleAdapter adapter;
+    private LiveData<List<Article>> currentSubscription; // Para rastrear qué estamos viendo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 1. Configurar RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ArticleAdapter();
         recyclerView.setAdapter(adapter);
+        /*adapter.setOnItemClickListener(article -> {
+            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+            intent.putExtra("ARTICLE_ID", article.id);
+            startActivity(intent);
+        });*/
 
-        // 2. Configurar búsqueda
+        adapter.setOnItemClickListener(article -> {
+            ArticleDetailSheet sheet = ArticleDetailSheet.newInstance(article.id);
+            sheet.show(getSupportFragmentManager(), "detail_sheet");
+        });
+
+        viewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
+        showRecentArticles();
+        viewModel.sync();
+
+        setupSearchView();
+    }
+
+    private void setupSearchView() {
         SearchView searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                performSearch(query);
+                if (!query.isEmpty()) {
+                    subscribeToSearch(query);
+                }
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
-                    // Si borra la búsqueda, volvemos a mostrar todo
-                    observeAllArticles();
-                } else {
-                    performSearch(newText);
+                    showRecentArticles(); // Volver a los 10 recientes si borra el texto
                 }
                 return true;
             }
         });
-
-        adapter.setOnItemClickListener(article -> {
-            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-            // Pasamos el ID del artículo
-            intent.putExtra("ARTICLE_ID", article.id);
-            startActivity(intent);
-        });
-
-        // Obtener el ViewModel
-        viewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
-
-        // OBSERVAR los datos: Cuando cambie la DB, este bloque se ejecuta solo
-        viewModel.getAllArticles().observe(this, articles -> {
-            if (articles != null) {
-                adapter.setArticles(articles);
-            }
-        });
-
-        // Sincronizar al iniciar
-        viewModel.sync();
     }
 
-    // Método auxiliar para cambiar la observación
-    private void performSearch(String query) {
-        // IMPORTANTE: Quitamos el observador anterior si existe para no duplicar
-        viewModel.searchArticles(query).observe(this, results -> {
-            if (results != null) {
-                adapter.setArticles(results);
-            }
+    private void showRecentArticles() {
+        // Removemos el observador anterior para que no se mezclen las listas
+        if (currentSubscription != null) {
+            currentSubscription.removeObservers(this);
+        }
+
+        currentSubscription = viewModel.getRecentArticles();
+        currentSubscription.observe(this, articles -> {
+            adapter.setArticles(articles);
         });
     }
 
-    private void observeAllArticles() {
-        viewModel.getAllArticles().observe(this, articles -> {
-            if (articles != null) {
-                adapter.setArticles(articles);
-            }
+    private void subscribeToSearch(String query) {
+        if (currentSubscription != null) {
+            currentSubscription.removeObservers(this);
+        }
+
+        // El repository disparará la API y Room actualizará este LiveData
+        currentSubscription = viewModel.searchArticles(query);
+        currentSubscription.observe(this, articles -> {
+            adapter.setArticles(articles);
         });
     }
 }
