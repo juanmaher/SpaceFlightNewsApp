@@ -25,4 +25,12 @@ public class Article {
     @SerializedName("published_at")
     @ColumnInfo(name = "published_at")
     public String publishedAt;
+
+    public Article(int id, String title, String imageUrl, String summary, String publishedAt) {
+        this.id = id;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.summary = summary;
+        this.publishedAt = publishedAt;
+    }
 }

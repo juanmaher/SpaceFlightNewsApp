@@ -15,7 +15,7 @@ import com.example.spaceflightnews.data.Article;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
     private final List<Article> articles = new ArrayList<>();
     private OnItemClickListener listener;
@@ -63,15 +63,5 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
         // Despachamos solo los cambios necesarios al Adapter
         diffResult.dispatchUpdatesTo(this);
-    }
-
-    static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        TextView title, summaryPreview;
-
-        public ArticleViewHolder(@NonNull View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.text_title);
-            summaryPreview = itemView.findViewById(R.id.text_summary_preview);
-        }
     }
 }

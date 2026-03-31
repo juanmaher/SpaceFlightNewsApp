@@ -1,11 +1,10 @@
-package com.example.spaceflightnews;
+package com.example.spaceflightnews.pages;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,6 +15,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.spaceflightnews.CompositionRoot;
+import com.example.spaceflightnews.R;
+import com.example.spaceflightnews.SpaceFlightApplication;
 import com.example.spaceflightnews.ui.ArticleViewModel;
 
 public class ArticleDetailFragment extends Fragment {
@@ -66,7 +68,10 @@ public class ArticleDetailFragment extends Fragment {
         }
 
         int articleId = getArguments().getInt("ARTICLE_ID");
-        ArticleViewModel viewModel = new ViewModelProvider(requireActivity()).get(ArticleViewModel.class);
+
+        SpaceFlightApplication app = (SpaceFlightApplication) requireActivity().getApplication();
+        CompositionRoot compositionRoot = app.getCompositionRoot();
+        ArticleViewModel viewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
 
         viewModel.getArticleById(articleId).observe(getViewLifecycleOwner(), article -> {
             if (article != null) {

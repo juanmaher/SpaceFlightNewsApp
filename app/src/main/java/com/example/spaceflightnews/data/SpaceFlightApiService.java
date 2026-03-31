@@ -10,9 +10,6 @@ public interface SpaceFlightApiService {
     @GET("articles/")
     Call<ArticleResponse> getArticles();
 
-    @GET("articles/{id}/")
-    Call<Article> getArticleById(@Path("id") int id);
-
     @GET("articles/")
     Call<ArticleResponse> getArticles(@Query("search") String searchTerm);
 }

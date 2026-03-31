@@ -1,12 +1,10 @@
-package com.example.spaceflightnews;
+package com.example.spaceflightnews.pages;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.LiveData;
@@ -14,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spaceflightnews.CompositionRoot;
+import com.example.spaceflightnews.R;
+import com.example.spaceflightnews.SpaceFlightApplication;
 import com.example.spaceflightnews.data.Article;
 import com.example.spaceflightnews.ui.ArticleAdapter;
 import com.example.spaceflightnews.ui.ArticleViewModel;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         setupAdapterClick();
 
-        viewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
+        CompositionRoot compositionRoot = ((SpaceFlightApplication) getApplication()).getCompositionRoot();
+        viewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
+
         showRecentArticles();
         viewModel.sync();
 
@@ -79,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
         EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         if (searchEditText != null) {
-            searchEditText.setTextColor(getResources().getColor(R.color.text_dark_blue));
-            searchEditText.setHintTextColor(getResources().getColor(R.color.text_soft_gray));
+            searchEditText.setTextColor(getResources().getColor(R.color.text_dark_blue, getTheme()));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.text_soft_gray, getTheme()));
         }
 
         searchView.setOnClickListener(v -> {
@@ -90,7 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
         if (searchIcon != null) {
-            searchIcon.setColorFilter(getResources().getColor(R.color.text_soft_gray));
+            searchIcon.setColorFilter(getResources().getColor(R.color.text_soft_gray, getTheme()));
+        }
+
+        ImageView closeBtn = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+        if (closeBtn != null) {
+            closeBtn.setColorFilter(getResources().getColor(R.color.text_soft_gray, getTheme()));
         }
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -111,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void showRecentArticles() {
         // Removemos el observador anterior para que no se mezclen las listas

@@ -1,14 +1,11 @@
 package com.example.spaceflightnews.repository;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 
 import com.example.spaceflightnews.data.Article;
 import com.example.spaceflightnews.data.ArticleDao;
 import com.example.spaceflightnews.data.ArticleResponse;
-import com.example.spaceflightnews.data.NetworkModule;
-import com.example.spaceflightnews.data.SpaceFlightDatabase;
+import com.example.spaceflightnews.data.SpaceFlightApiService;
 
 import java.util.List;
 
@@ -18,14 +15,11 @@ import retrofit2.Response;
 
 public class ArticleRepository {
     private final ArticleDao articleDao;
+    private final SpaceFlightApiService apiService;
 
-    public ArticleRepository(Context context) {
-        SpaceFlightDatabase db = SpaceFlightDatabase.getDatabase(context);
-        this.articleDao = db.articleDao();
-    }
-
-    public LiveData<List<Article>> getAllArticles() {
-        return articleDao.getAllArticles();
+    public ArticleRepository(ArticleDao articleDao, SpaceFlightApiService api) {
+        this.articleDao = articleDao;
+        this.apiService = api;
     }
 
     public LiveData<List<Article>> search(String query) {
@@ -38,7 +32,7 @@ public class ArticleRepository {
     }
 
     private void refreshArticlesByQuery(String query) {
-        NetworkModule.getApiService().getArticles(query).enqueue(new Callback<>() {
+        apiService.getArticles(query).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -61,7 +55,7 @@ public class ArticleRepository {
     }
 
     public void syncArticles() {
-        NetworkModule.getApiService().getArticles().enqueue(new Callback<>() {
+        apiService.getArticles().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

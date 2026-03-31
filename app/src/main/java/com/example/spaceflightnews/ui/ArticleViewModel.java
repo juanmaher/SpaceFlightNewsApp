@@ -12,32 +12,26 @@ import com.example.spaceflightnews.repository.ArticleRepository;
 import java.util.List;
 
 public class ArticleViewModel extends AndroidViewModel {
-    private ArticleRepository repository;
-    private LiveData<List<Article>> allArticles;
+    private final ArticleRepository mRepository;
 
-    public ArticleViewModel(@NonNull Application application) {
+    public ArticleViewModel(@NonNull Application application, ArticleRepository repository) {
         super(application);
-        repository = new ArticleRepository(application);
-        allArticles = repository.getAllArticles();
-    }
-
-    public LiveData<List<Article>> getAllArticles() {
-        return allArticles;
+        mRepository = repository;
     }
 
     public LiveData<List<Article>> searchArticles(String query) {
-        return repository.search(query);
+        return mRepository.search(query);
     }
 
     public LiveData<Article> getArticleById(int id) {
-        return repository.getArticleById(id);
+        return mRepository.getArticleById(id);
     }
 
     public LiveData<List<Article>> getRecentArticles() {
-        return repository.getRecentArticles(); // Llama al DAO con LIMIT 10
+        return mRepository.getRecentArticles(); // Llama al DAO con LIMIT 10
     }
 
     public void sync() {
-        repository.syncArticles();
+        mRepository.syncArticles();
     }
 }
