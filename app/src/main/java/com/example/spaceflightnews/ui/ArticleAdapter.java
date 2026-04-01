@@ -53,15 +53,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     }
 
     public void setArticles(List<Article> newArticles) {
-        // Calculamos la diferencia entre la lista vieja y la nueva
         ArticleDiffCallback diffCallback = new ArticleDiffCallback(this.articles, newArticles);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        // Actualizamos la referencia de la lista
         this.articles.clear();
         this.articles.addAll(newArticles);
 
-        // Despachamos solo los cambios necesarios al Adapter
         diffResult.dispatchUpdatesTo(this);
     }
 }

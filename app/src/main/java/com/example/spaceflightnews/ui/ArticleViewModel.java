@@ -28,7 +28,7 @@ public class ArticleViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Article>> getRecentArticles() {
-        return mRepository.getRecentArticles(); // Llama al DAO con LIMIT 10
+        return mRepository.getRecentArticles();
     }
 
     public void sync() {

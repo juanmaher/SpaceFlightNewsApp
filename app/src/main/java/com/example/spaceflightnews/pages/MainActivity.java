@@ -24,7 +24,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private ArticleViewModel viewModel;
     private ArticleAdapter adapter;
-    private LiveData<List<Article>> currentSubscription; // Para rastrear qué estamos viendo
+    private LiveData<List<Article>> currentSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,26 +53,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupAdapterClick() {
         adapter.setOnItemClickListener(article -> {
-            // Si ya hay un fragmento mostrándose, no hagas nada
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) return;
 
-            // 1. Ocultar la lista (opcional, el fragmento la tapará)
             findViewById(R.id.main_list_container).setVisibility(View.GONE);
             findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
 
-            // 2. Crear instancia del fragmento pasándole el ID
             ArticleDetailFragment detailFragment = ArticleDetailFragment.newInstance(article.id);
 
-            // 3. Transacción con animación fluida
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(
-                            R.anim.slide_in_right,  // Animación al entrar
-                            R.anim.fade_out,        // Animación de la lista al salir
-                            R.anim.fade_in,         // Animación de la lista al volver
-                            R.anim.slide_out_right  // Animación del fragment al salir
+                            R.anim.slide_in_right,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out_right
                     )
                     .replace(R.id.fragment_container, detailFragment)
-                    .addToBackStack(null) // Vital para que el botón 'Atrás' funcione
+                    .addToBackStack(null)
                     .commit();
         });
     }
@@ -113,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
-                    showRecentArticles(); // Volver a los 10 recientes si borra el texto
+                    showRecentArticles();
                 }
                 return true;
             }
@@ -121,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRecentArticles() {
-        // Removemos el observador anterior para que no se mezclen las listas
         if (currentSubscription != null) {
             currentSubscription.removeObservers(this);
         }
@@ -137,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             currentSubscription.removeObservers(this);
         }
 
-        // El repository disparará la API y Room actualizará este LiveData
         currentSubscription = viewModel.searchArticles(query);
         currentSubscription.observe(this, articles -> {
             adapter.setArticles(articles);

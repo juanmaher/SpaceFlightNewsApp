@@ -28,13 +28,11 @@ public class ArticleDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        // Comparamos por ID único (Primary Key de SQLite)
         return oldList.get(oldItemPosition).id == newList.get(newItemPosition).id;
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        // Comparamos si el contenido visual cambió
         Article oldArticle = oldList.get(oldItemPosition);
         Article newArticle = newList.get(newItemPosition);
 

@@ -24,6 +24,6 @@ public class ArticleViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ArticleViewModel.class)) {
             return (T) new ArticleViewModel(application, repository);
         }
-        throw new IllegalArgumentException("Clase ViewModel desconocida");
+        throw new IllegalArgumentException("Unknown ViewModel class");
     }
 }

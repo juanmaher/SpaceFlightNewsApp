@@ -23,11 +23,7 @@ public class ArticleRepository {
     }
 
     public LiveData<List<Article>> search(String query) {
-        // 1. Disparamos la búsqueda a la API de forma asíncrona
         refreshArticlesByQuery(query);
-
-        // 2. Retornamos el LiveData de la DB local.
-        // En cuanto la API responda y guarde en el DAO, este LiveData se activará.
         return articleDao.searchArticles("%" + query + "%");
     }
 
@@ -37,7 +33,6 @@ public class ArticleRepository {
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     new Thread(() -> {
-                        // Guardamos los resultados frescos de la API en SQLite
                         articleDao.insertArticles(response.body().results);
                     }).start();
                 }
@@ -45,7 +40,6 @@ public class ArticleRepository {
 
             @Override
             public void onFailure(Call<ArticleResponse> call, Throwable t) {
-                // Manejar error de red si es necesario
             }
         });
     }

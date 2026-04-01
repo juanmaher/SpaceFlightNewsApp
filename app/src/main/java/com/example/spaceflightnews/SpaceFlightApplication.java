@@ -16,7 +16,6 @@ public class SpaceFlightApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         mCompositionRoot = new CompositionRoot(this);
     }
 

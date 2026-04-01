@@ -43,7 +43,6 @@ public class ArticleDetailFragment extends Fragment {
         Toolbar toolbar = v.findViewById(R.id.detail_toolbar);
         toolbar.setNavigationOnClickListener(view -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-        // Manejo de Back moderno
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -53,7 +52,6 @@ public class ArticleDetailFragment extends Fragment {
             }
         });
 
-        // Tinte de flecha
         Drawable backArrow = toolbar.getNavigationIcon();
         if (backArrow != null) {
             backArrow.setTint(ContextCompat.getColor(requireContext(), R.color.text_dark_blue));
@@ -71,11 +69,9 @@ public class ArticleDetailFragment extends Fragment {
                 ((TextView) v.findViewById(R.id.detail_summary)).setText(article.summary);
                 ((TextView) v.findViewById(R.id.detail_date)).setText(article.publishedAt);
 
-                // Cargar Imagen (Usando Glide)
                 ImageView imageView = v.findViewById(R.id.detail_image);
                 Glide.with(this).load(article.imageUrl).into(imageView);
 
-                // Botón URL
                 v.findViewById(R.id.btn_open_url).setOnClickListener(view -> {
                     CustomTabsIntent intent = new CustomTabsIntent.Builder()
                             .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.pastel_blue_medium))
