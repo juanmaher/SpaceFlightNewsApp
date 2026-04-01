@@ -1,5 +1,7 @@
 package com.example.spaceflightnews.data;
 
+import com.example.spaceflightnews.BuildConfig;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -14,12 +16,15 @@ public class NetworkModule {
 
     public static SpaceFlightApiService getApiService() {
         if (mRetrofit == null) {
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
 
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(loggingInterceptor)
-                    .build();
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                okHttpClientBuilder.addInterceptor(loggingInterceptor);
+            }
+
+            OkHttpClient okHttpClient = okHttpClientBuilder.build();
 
             mRetrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
