@@ -1,5 +1,8 @@
 package com.example.spaceflightnews.data;
 
+/**
+ * Class representing the status of a network operation.
+ **/
 public class Resource<T> {
     public enum Status { SUCCESS, ERROR, LOADING }
 

@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.spaceflightnews.repository.ArticleRepository;
 
+/**
+ * Factory class to create ArticleViewModel instances.
+ */
 public class ArticleViewModelFactory implements ViewModelProvider.Factory {
     private final Application mApplication;
     private final ArticleRepository mRepository;

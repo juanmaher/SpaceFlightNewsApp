@@ -15,6 +15,9 @@ import com.example.spaceflightnews.data.Article;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for the RecyclerView in MainActivity.
+ */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
     private final List<Article> mArticles = new ArrayList<>();

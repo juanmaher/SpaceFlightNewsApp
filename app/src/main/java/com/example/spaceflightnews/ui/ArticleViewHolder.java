@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spaceflightnews.R;
 
+/**
+ * ViewHolder for a single article item in the RecyclerView.
+ */
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     public final TextView mTitle, mSummaryPreview;
 

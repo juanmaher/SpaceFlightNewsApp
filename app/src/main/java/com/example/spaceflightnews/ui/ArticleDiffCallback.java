@@ -6,6 +6,9 @@ import com.example.spaceflightnews.data.Article;
 
 import java.util.List;
 
+/**
+ * DiffUtil.Callback implementation to optimize RecyclerView updates.
+ */
 public class ArticleDiffCallback extends DiffUtil.Callback {
 
     private final List<Article> mOldList;

@@ -5,6 +5,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Retrofit module for network operations.
+ */
 public class NetworkModule {
     private static final String BASE_URL = "https://api.spaceflightnewsapi.net/v4/";
     private static Retrofit mRetrofit = null;
