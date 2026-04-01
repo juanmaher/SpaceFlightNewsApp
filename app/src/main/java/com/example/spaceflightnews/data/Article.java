@@ -26,11 +26,16 @@ public class Article {
     @ColumnInfo(name = "published_at")
     public String publishedAt;
 
-    public Article(int id, String title, String imageUrl, String summary, String publishedAt) {
+    @SerializedName("url")
+    @ColumnInfo(name = "url")
+    public String url;
+
+    public Article(int id, String title, String imageUrl, String summary, String publishedAt, String url) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.summary = summary;
         this.publishedAt = publishedAt;
+        this.url = url;
     }
 }

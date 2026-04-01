@@ -42,7 +42,7 @@ public class ArticleRepositoryNetworkTest {
     public void syncArticles_onApiResponse_savesToDb() {
         // Arrange: Simulamos una respuesta exitosa de la API
         ArticleResponse fakeResponse = new ArticleResponse();
-        fakeResponse.results = Arrays.asList(new Article(1, "Test", "url", "sum", "date"));
+        fakeResponse.results = Arrays.asList(new Article(1, "Test", "url", "sum", "date", "url"));
 
         // Mockeamos el comportamiento de Retrofit (enqueue)
         when(mockApi.getArticles()).thenReturn(mockCall);

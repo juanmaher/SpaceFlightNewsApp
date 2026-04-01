@@ -44,7 +44,7 @@ public class ArticleRepositoryTest {
 
     @Test
     public void search_returnsDataFromDao() {
-        Article article = new Article(1, "NASA News", "url", "summary", "2026");
+        Article article = new Article(1, "NASA News", "url", "summary", "2026", "url");
 
         MutableLiveData<List<Article>> liveData = new MutableLiveData<>();
         liveData.setValue(Collections.singletonList(article));

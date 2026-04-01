@@ -2,9 +2,7 @@
     <style name="Theme.SpaceFlightNews" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pastel_blue_medium</item>
         <item name="colorPrimaryVariant">@color/pastel_blue_accent</item>
-
         <item name="android:statusBarColor">@color/pastel_blue_medium</item>
-
         <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

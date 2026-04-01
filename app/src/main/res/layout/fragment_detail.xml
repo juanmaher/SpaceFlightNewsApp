@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
-    android:clickable="true"
-    android:focusable="true">
+    android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/detail_toolbar"
@@ -13,7 +11,6 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/pastel_blue_medium"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:navigationIconTint="@color/text_soft_gray"
         app:titleTextColor="@color/text_dark_blue" />
 
     <ScrollView
@@ -23,41 +20,72 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/detail_title"
+            <ImageView
+                android:id="@+id/detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:background="@color/pastel_blue_light" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_dark_blue"
-                android:lineSpacingMultiplier="1.1" />
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <TextView
-                android:id="@+id/detail_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="13sp"
-                android:textColor="@color/pastel_blue_accent"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1" />
+                <TextView
+                    android:id="@+id/detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_dark_blue" />
 
-            <View
-                android:layout_width="60dp"
-                android:layout_height="4dp"
-                android:layout_marginVertical="20dp"
-                android:background="@color/pastel_blue_medium" />
+                <TextView
+                    android:id="@+id/detail_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="14sp"
+                    android:textStyle="italic"
+                    android:textColor="@color/text_soft_gray" />
 
-            <TextView
-                android:id="@+id/detail_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textColor="@color/text_soft_gray"
-                android:lineSpacingExtra="6dp" />
+                <TextView
+                    android:id="@+id/detail_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/pastel_blue_accent"
+                    android:textAllCaps="true" />
+
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="4dp"
+                    android:layout_marginVertical="15dp"
+                    android:background="@color/pastel_blue_medium" />
+
+                <TextView
+                    android:id="@+id/detail_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:textColor="@color/text_soft_gray"
+                    android:lineSpacingExtra="6dp" />
+
+                <Button
+                    android:id="@+id/btn_open_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/text_open_url_btn"
+                    android:backgroundTint="@color/pastel_blue_accent"
+                    android:textColor="@color/white"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

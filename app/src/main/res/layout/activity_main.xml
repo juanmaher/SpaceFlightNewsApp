@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pastel_blue_light">
+    android:background="@color/pastel_blue_light"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:id="@+id/main_list_container"
@@ -27,9 +28,7 @@
                 android:focusable="true"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
-                app:queryHint="Buscar noticias..."
-                app:defaultQueryHint="Buscar noticias..." />
-
+                app:queryHint="@string/text_search_view" />
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView

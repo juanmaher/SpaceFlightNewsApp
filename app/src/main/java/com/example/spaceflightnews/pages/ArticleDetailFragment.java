@@ -1,20 +1,25 @@
 package com.example.spaceflightnews.pages;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.spaceflightnews.CompositionRoot;
 import com.example.spaceflightnews.R;
 import com.example.spaceflightnews.SpaceFlightApplication;
@@ -36,39 +41,26 @@ public class ArticleDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_detail, container, false);
 
         Toolbar toolbar = v.findViewById(R.id.detail_toolbar);
+        toolbar.setNavigationOnClickListener(view -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-        // Al hacer clic en la flecha de volver
-        toolbar.setNavigationOnClickListener(view -> {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-        });
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        // Manejo de Back moderno
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Primero: Volver a mostrar la lista en la Activity
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).showList();
-                }
-
-                // Segundo: Quitar este callback para que no interfiera más
+                if (getActivity() instanceof MainActivity) { ((MainActivity) getActivity()).showList(); }
                 this.remove();
-
-                // Tercero: Ejecutar el atrás real del FragmentManager
                 getParentFragmentManager().popBackStack();
             }
-        };
+        });
 
-        // El Owner asegura que esto muera con el fragmento
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-
+        // Tinte de flecha
         Drawable backArrow = toolbar.getNavigationIcon();
         if (backArrow != null) {
-            backArrow.setTint(ContextCompat.getColor(requireContext(), R.color.text_soft_gray));
+            backArrow.setTint(ContextCompat.getColor(requireContext(), R.color.text_dark_blue));
             toolbar.setNavigationIcon(backArrow);
         }
 
         int articleId = getArguments().getInt("ARTICLE_ID");
-
         SpaceFlightApplication app = (SpaceFlightApplication) requireActivity().getApplication();
         CompositionRoot compositionRoot = app.getCompositionRoot();
         ArticleViewModel viewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
@@ -78,6 +70,18 @@ public class ArticleDetailFragment extends Fragment {
                 ((TextView) v.findViewById(R.id.detail_title)).setText(article.title);
                 ((TextView) v.findViewById(R.id.detail_summary)).setText(article.summary);
                 ((TextView) v.findViewById(R.id.detail_date)).setText(article.publishedAt);
+
+                // Cargar Imagen (Usando Glide)
+                ImageView imageView = v.findViewById(R.id.detail_image);
+                Glide.with(this).load(article.imageUrl).into(imageView);
+
+                // Botón URL
+                v.findViewById(R.id.btn_open_url).setOnClickListener(view -> {
+                    CustomTabsIntent intent = new CustomTabsIntent.Builder()
+                            .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.pastel_blue_medium))
+                            .build();
+                    intent.launchUrl(requireContext(), Uri.parse(article.url));
+                });
             }
         });
 

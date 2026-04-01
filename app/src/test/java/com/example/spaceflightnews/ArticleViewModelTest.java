@@ -60,7 +60,7 @@ public class ArticleViewModelTest {
         // 1. Arrange: Preparamos datos falsos
         MutableLiveData<List<Article>> mockLiveData = new MutableLiveData<>();
         List<Article> articles = new ArrayList<>();
-        articles.add(new Article(1, "News Title", "https://example.com/image.jpg", "Summary", "2023-08-01"));
+        articles.add(new Article(1, "News Title", "https://example.com/image.jpg", "Summary", "2023-08-01", "https://example.com"));
         mockLiveData.setValue(articles);
 
         // 2. Mock: Cuando el repo busque "NASA", que devuelva nuestro LiveData
@@ -116,7 +116,7 @@ public class ArticleViewModelTest {
     public void getArticleById_validId_returnsCorrectArticle() {
         // Arrange
         int articleId = 101;
-        Article mockArticle = new Article(articleId, "SpaceX Launch", "img.jpg", "Summary", "2024");
+        Article mockArticle = new Article(articleId, "SpaceX Launch", "img.jpg", "Summary", "2024", "url");
         MutableLiveData<Article> liveData = new MutableLiveData<>();
         liveData.setValue(mockArticle);
 

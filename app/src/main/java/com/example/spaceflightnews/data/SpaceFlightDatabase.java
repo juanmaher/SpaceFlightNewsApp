@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Article.class}, version = 1, exportSchema = false)
+@Database(entities = {Article.class}, version = 2, exportSchema = false)
 public abstract class SpaceFlightDatabase extends RoomDatabase {
 
     public abstract ArticleDao articleDao();
@@ -19,6 +19,7 @@ public abstract class SpaceFlightDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     SpaceFlightDatabase.class, "spaceflight_db")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
