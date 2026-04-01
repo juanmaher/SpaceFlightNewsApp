@@ -12,6 +12,7 @@ import com.example.spaceflightnews.data.Article;
 import com.example.spaceflightnews.data.ArticleDao;
 import com.example.spaceflightnews.data.SpaceFlightApiService;
 import com.example.spaceflightnews.repository.ArticleRepository;
+import com.example.spaceflightnews.repository.RepositoryCallback;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,7 +53,7 @@ public class ArticleRepositoryTest {
         when(mockDao.searchArticles("%NASA%")).thenReturn(liveData);
         when(mockApi.getArticles(anyString())).thenReturn(mockCall);
 
-        LiveData<List<Article>> result = repository.search("NASA");
+        LiveData<List<Article>> result = repository.search("NASA", any(RepositoryCallback.class));
 
         List<Article> value = result.getValue(); // gracias a InstantTaskExecutorRule
 

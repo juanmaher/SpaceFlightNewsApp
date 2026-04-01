@@ -3,6 +3,10 @@ package com.example.spaceflightnews;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import android.app.Application;
 
@@ -12,6 +16,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.spaceflightnews.data.Article;
 import com.example.spaceflightnews.repository.ArticleRepository;
+import com.example.spaceflightnews.repository.RepositoryCallback;
 import com.example.spaceflightnews.ui.ArticleViewModel;
 
 import org.junit.Before;
@@ -45,9 +50,9 @@ public class ArticleViewModelTest {
     }
 
     @Test
-    public void sync_shouldInvokeRepositorySync() {
-        viewModel.sync();
-        Mockito.verify(mockRepository, Mockito.times(1)).syncArticles();
+    public void fetchArticles_shouldInvokeRepositorySync() {
+        viewModel.fetchArticles();
+        verify(mockRepository, Mockito.times(1)).syncArticles(any(RepositoryCallback.class));
     }
 
     @Test
@@ -57,7 +62,7 @@ public class ArticleViewModelTest {
         articles.add(new Article(1, "News Title", "https://example.com/image.jpg", "Summary", "2023-08-01", "https://example.com"));
         mockLiveData.setValue(articles);
 
-        Mockito.when(mockRepository.search("NASA")).thenReturn(mockLiveData);
+        when(mockRepository.search(eq("NASA"), any(RepositoryCallback.class))).thenReturn(mockLiveData);
 
         LiveData<List<Article>> result = viewModel.searchArticles("NASA");
 
@@ -65,7 +70,7 @@ public class ArticleViewModelTest {
         assertEquals(1, result.getValue().size());
         assertEquals("News Title", result.getValue().get(0).title);
 
-        Mockito.verify(mockRepository, Mockito.times(1)).search("NASA");
+        verify(mockRepository, Mockito.times(1)).search(eq("NASA"), any(RepositoryCallback.class));
     }
 
     @Test
@@ -75,13 +80,13 @@ public class ArticleViewModelTest {
         MutableLiveData<List<Article>> emptyData = new MutableLiveData<>();
         emptyData.setValue(new ArrayList<>());
 
-        Mockito.when(mockRepository.search(emptyQuery)).thenReturn(emptyData);
+        when(mockRepository.search(eq(emptyQuery), any(RepositoryCallback.class))).thenReturn(emptyData);
 
         LiveData<List<Article>> result = viewModel.searchArticles(emptyQuery);
 
         assertNotNull(result.getValue());
         assertTrue(result.getValue().isEmpty());
-        Mockito.verify(mockRepository).search(emptyQuery);
+        verify(mockRepository).search(eq(emptyQuery), any(RepositoryCallback.class));
     }
 
     @Test
@@ -90,9 +95,12 @@ public class ArticleViewModelTest {
         MutableLiveData<List<Article>> emptyLiveData = new MutableLiveData<>();
         emptyLiveData.setValue(new ArrayList<>());
 
-        Mockito.when(mockRepository.search(query)).thenReturn(emptyLiveData);
+        when(mockRepository.search(eq(query), any(RepositoryCallback.class)))
+                .thenReturn(emptyLiveData);
         LiveData<List<Article>> result = viewModel.searchArticles(query);
         assertEquals(0, result.getValue().size());
+
+        verify(mockRepository).search(eq(query), any(RepositoryCallback.class));
     }
 
     @Test
@@ -102,7 +110,7 @@ public class ArticleViewModelTest {
         MutableLiveData<Article> liveData = new MutableLiveData<>();
         liveData.setValue(mockArticle);
 
-        Mockito.when(mockRepository.getArticleById(articleId)).thenReturn(liveData);
+        when(mockRepository.getArticleById(articleId)).thenReturn(liveData);
 
         LiveData<Article> result = viewModel.getArticleById(articleId);
 
@@ -116,9 +124,9 @@ public class ArticleViewModelTest {
         MutableLiveData<List<Article>> recentData = new MutableLiveData<>();
         recentData.setValue(new ArrayList<>()); // Simulación de lista vacía o con datos
 
-        Mockito.when(mockRepository.getRecentArticles()).thenReturn(recentData);
+        when(mockRepository.getRecentArticles()).thenReturn(recentData);
 
         viewModel.getRecentArticles();
-        Mockito.verify(mockRepository, Mockito.times(1)).getRecentArticles();
+        verify(mockRepository, Mockito.times(1)).getRecentArticles();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.spaceflightnews;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,7 @@ import com.example.spaceflightnews.data.ArticleDao;
 import com.example.spaceflightnews.data.ArticleResponse;
 import com.example.spaceflightnews.data.SpaceFlightApiService;
 import com.example.spaceflightnews.repository.ArticleRepository;
+import com.example.spaceflightnews.repository.RepositoryCallback;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +48,7 @@ public class ArticleRepositoryNetworkTest {
         when(mockApi.getArticles()).thenReturn(mockCall);
 
         ArgumentCaptor<Callback<ArticleResponse>> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-        repository.syncArticles();
+        repository.syncArticles(any(RepositoryCallback.class));
 
         verify(mockApi).getArticles();
         verify(mockCall).enqueue(callbackCaptor.capture());

@@ -22,24 +22,28 @@ public class ArticleRepository {
         this.apiService = api;
     }
 
-    public LiveData<List<Article>> search(String query) {
-        refreshArticlesByQuery(query);
+    public LiveData<List<Article>> search(String query, RepositoryCallback callback) {
+        refreshArticlesByQuery(query, callback);
         return articleDao.searchArticles("%" + query + "%");
     }
 
-    private void refreshArticlesByQuery(String query) {
+    private void refreshArticlesByQuery(String query, RepositoryCallback callback) {
         apiService.getArticles(query).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     new Thread(() -> {
                         articleDao.insertArticles(response.body().results);
+                        callback.onSuccess();
                     }).start();
+                } else {
+                    callback.onError("Server error: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<ArticleResponse> call, Throwable t) {
+                callback.onError("No internet connection");
             }
         });
     }
@@ -48,19 +52,23 @@ public class ArticleRepository {
         return articleDao.getArticleById(id);
     }
 
-    public void syncArticles() {
+    public void syncArticles(RepositoryCallback callback) {
         apiService.getArticles().enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     new Thread(() -> {
                         articleDao.insertArticles(response.body().results);
+                        callback.onSuccess();
                     }).start();
+                } else {
+                    callback.onError("Server error: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<ArticleResponse> call, Throwable throwable) {
+            public void onFailure(Call<ArticleResponse> call, Throwable t) {
+                callback.onError("No internet connection");
             }
         });
     }

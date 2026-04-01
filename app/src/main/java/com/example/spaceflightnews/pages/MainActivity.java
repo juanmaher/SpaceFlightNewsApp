@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -41,8 +43,28 @@ public class MainActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
 
         showRecentArticles();
-        viewModel.sync();
 
+        ProgressBar progressBar = findViewById(R.id.main_progress_bar);
+        viewModel.getArticlesStatus().observe(this, resource -> {
+            if (resource == null) return;
+
+            switch (resource.status) {
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+
+                case SUCCESS:
+                    progressBar.setVisibility(View.GONE);
+                    break;
+
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
+
+        viewModel.fetchArticles();
         setupSearchView();
     }
 
@@ -131,6 +153,26 @@ public class MainActivity extends AppCompatActivity {
         if (currentSubscription != null) {
             currentSubscription.removeObservers(this);
         }
+
+        ProgressBar progressBar = findViewById(R.id.main_progress_bar);
+        viewModel.getArticlesStatus().observe(this, resource -> {
+            if (resource == null) return;
+
+            switch (resource.status) {
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    break;
+
+                case SUCCESS:
+                    progressBar.setVisibility(View.GONE);
+                    break;
+
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
 
         currentSubscription = viewModel.searchArticles(query);
         currentSubscription.observe(this, articles -> {
