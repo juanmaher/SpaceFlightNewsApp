@@ -9,12 +9,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.spaceflightnews.repository.ArticleRepository;
 
 public class ArticleViewModelFactory implements ViewModelProvider.Factory {
-    private final Application application;
-    private final ArticleRepository repository;
+    private final Application mApplication;
+    private final ArticleRepository mRepository;
 
     public ArticleViewModelFactory(Application application, ArticleRepository repository) {
-        this.application = application;
-        this.repository = repository;
+        this.mApplication = application;
+        this.mRepository = repository;
     }
 
     @NonNull
@@ -22,7 +22,7 @@ public class ArticleViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ArticleViewModel.class)) {
-            return (T) new ArticleViewModel(application, repository);
+            return (T) new ArticleViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

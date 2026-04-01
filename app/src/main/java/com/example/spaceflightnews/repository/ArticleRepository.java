@@ -14,53 +14,41 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ArticleRepository {
-    private final ArticleDao articleDao;
-    private final SpaceFlightApiService apiService;
+    private final ArticleDao mArticleDao;
+    private final SpaceFlightApiService mApiService;
 
     public ArticleRepository(ArticleDao articleDao, SpaceFlightApiService api) {
-        this.articleDao = articleDao;
-        this.apiService = api;
+        this.mArticleDao = articleDao;
+        this.mApiService = api;
     }
 
     public LiveData<List<Article>> search(String query, RepositoryCallback callback) {
         refreshArticlesByQuery(query, callback);
-        return articleDao.searchArticles("%" + query + "%");
-    }
-
-    private void refreshArticlesByQuery(String query, RepositoryCallback callback) {
-        apiService.getArticles(query).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    new Thread(() -> {
-                        articleDao.insertArticles(response.body().results);
-                        callback.onSuccess();
-                    }).start();
-                } else {
-                    callback.onError("Server error: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArticleResponse> call, Throwable t) {
-                callback.onError("No internet connection");
-            }
-        });
-    }
-
-    public LiveData<Article> getArticleById(int id) {
-        return articleDao.getArticleById(id);
+        return mArticleDao.searchArticles("%" + query + "%");
     }
 
     public void syncArticles(RepositoryCallback callback) {
-        apiService.getArticles().enqueue(new Callback<>() {
+        executeRequest(mApiService.getArticles(), callback);
+    }
+
+    private void refreshArticlesByQuery(String query, RepositoryCallback callback) {
+        executeRequest(mApiService.getArticles(query), callback);
+    }
+
+    public LiveData<Article> getArticleById(int id) {
+        return mArticleDao.getArticleById(id);
+    }
+
+    public LiveData<List<Article>> getRecentArticles() {
+        return mArticleDao.getRecentArticles();
+    }
+
+    private void executeRequest(Call<ArticleResponse> call, RepositoryCallback callback) {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    new Thread(() -> {
-                        articleDao.insertArticles(response.body().results);
-                        callback.onSuccess();
-                    }).start();
+                    processAndSave(response.body().results, callback);
                 } else {
                     callback.onError("Server error: " + response.code());
                 }
@@ -73,7 +61,14 @@ public class ArticleRepository {
         });
     }
 
-    public LiveData<List<Article>> getRecentArticles() {
-        return articleDao.getRecentArticles();
+    private void processAndSave(List<Article> articles, RepositoryCallback callback) {
+        new Thread(() -> {
+            try {
+                mArticleDao.insertArticles(articles);
+                callback.onSuccess();
+            } catch (Exception e) {
+                callback.onError("Database error: " + e.getMessage());
+            }
+        }).start();
     }
 }

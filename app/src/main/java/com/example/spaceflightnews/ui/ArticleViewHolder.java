@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.spaceflightnews.R;
 
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
-    TextView title, summaryPreview;
+    public final TextView mTitle, mSummaryPreview;
 
     public ArticleViewHolder(@NonNull View itemView) {
         super(itemView);
-        title = itemView.findViewById(R.id.text_title);
-        summaryPreview = itemView.findViewById(R.id.text_summary_preview);
+        mTitle = itemView.findViewById(R.id.text_title);
+        mSummaryPreview = itemView.findViewById(R.id.text_summary_preview);
     }
 }

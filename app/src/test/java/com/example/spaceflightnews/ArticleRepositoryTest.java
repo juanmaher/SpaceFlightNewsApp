@@ -44,7 +44,7 @@ public class ArticleRepositoryTest {
     }
 
     @Test
-    public void search_returnsDataFromDao() {
+    public void search_whenQueryMatches_returnsDataFromDao() {
         Article article = new Article(1, "NASA News", "url", "summary", "2026", "url");
 
         MutableLiveData<List<Article>> liveData = new MutableLiveData<>();
@@ -55,7 +55,7 @@ public class ArticleRepositoryTest {
 
         LiveData<List<Article>> result = repository.search("NASA", any(RepositoryCallback.class));
 
-        List<Article> value = result.getValue(); // gracias a InstantTaskExecutorRule
+        List<Article> value = result.getValue();
 
         assertEquals(1, value.size());
         assertEquals("NASA News", value.get(0).title);

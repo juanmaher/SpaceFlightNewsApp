@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ArticleViewModel extends AndroidViewModel {
     private final ArticleRepository mRepository;
-    private final MutableLiveData<Resource<List<Article>>> articlesStatus = new MutableLiveData<>();
+    private final MutableLiveData<Resource<List<Article>>> mArticlesStatus = new MutableLiveData<>();
 
     public ArticleViewModel(@NonNull Application application, ArticleRepository repository) {
         super(application);
@@ -27,12 +27,12 @@ public class ArticleViewModel extends AndroidViewModel {
         return mRepository.search(query, new RepositoryCallback() {
             @Override
             public void onSuccess() {
-                articlesStatus.postValue(Resource.success(null));
+                mArticlesStatus.postValue(Resource.success(null));
             }
 
             @Override
             public void onError(String error) {
-                articlesStatus.postValue(Resource.error(error));
+                mArticlesStatus.postValue(Resource.error(error));
             }
         });
     }
@@ -46,22 +46,22 @@ public class ArticleViewModel extends AndroidViewModel {
     }
 
     public void fetchArticles() {
-        articlesStatus.setValue(Resource.loading());
+        mArticlesStatus.setValue(Resource.loading());
 
         mRepository.syncArticles(new RepositoryCallback() {
             @Override
             public void onSuccess() {
-                articlesStatus.postValue(Resource.success(null));
+                mArticlesStatus.postValue(Resource.success(null));
             }
 
             @Override
             public void onError(String error) {
-                articlesStatus.postValue(Resource.error(error));
+                mArticlesStatus.postValue(Resource.error(error));
             }
         });
     }
 
     public LiveData<Resource<List<Article>>> getArticlesStatus() {
-        return articlesStatus;
+        return mArticlesStatus;
     }
 }

@@ -7,10 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkModule {
     private static final String BASE_URL = "https://api.spaceflightnewsapi.net/v4/";
-    private static Retrofit retrofit = null;
+    private static Retrofit mRetrofit = null;
 
     public static SpaceFlightApiService getApiService() {
-        if (retrofit == null) {
+        if (mRetrofit == null) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -18,12 +18,12 @@ public class NetworkModule {
                     .addInterceptor(loggingInterceptor)
                     .build();
 
-            retrofit = new Retrofit.Builder()
+            mRetrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return retrofit.create(SpaceFlightApiService.class);
+        return mRetrofit.create(SpaceFlightApiService.class);
     }
 }

@@ -37,7 +37,7 @@ public class ArticleViewModelTest {
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
     @Mock
-    private Application mockApplication; // AndroidViewModel usa Application
+    private Application mockApplication;
 
     @Mock
     private ArticleRepository mockRepository;
@@ -75,7 +75,6 @@ public class ArticleViewModelTest {
 
     @Test
     public void searchArticles_emptyQuery_returnsEmptyList() {
-
         String emptyQuery = "";
         MutableLiveData<List<Article>> emptyData = new MutableLiveData<>();
         emptyData.setValue(new ArrayList<>());
@@ -122,7 +121,7 @@ public class ArticleViewModelTest {
     @Test
     public void getRecentArticles_whenCalled_invokesRepositoryRecentMethod() {
         MutableLiveData<List<Article>> recentData = new MutableLiveData<>();
-        recentData.setValue(new ArrayList<>()); // Simulación de lista vacía o con datos
+        recentData.setValue(new ArrayList<>());
 
         when(mockRepository.getRecentArticles()).thenReturn(recentData);
 

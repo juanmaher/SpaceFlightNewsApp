@@ -17,15 +17,15 @@ import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
-    private final List<Article> articles = new ArrayList<>();
-    private OnItemClickListener listener;
+    private final List<Article> mArticles = new ArrayList<>();
+    private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
         void onItemClick(Article article);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+        this.mListener = listener;
     }
 
     @NonNull
@@ -38,26 +38,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
-        Article current = articles.get(position);
-        holder.title.setText(current.title);
-        holder.summaryPreview.setText(current.summary);
+        Article current = mArticles.get(position);
+        holder.mTitle.setText(current.title);
+        holder.mSummaryPreview.setText(current.summary);
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(current);
+            if (mListener != null) mListener.onItemClick(current);
         });
     }
 
     @Override
     public int getItemCount() {
-        return articles.size();
+        return mArticles.size();
     }
 
     public void setArticles(List<Article> newArticles) {
-        ArticleDiffCallback diffCallback = new ArticleDiffCallback(this.articles, newArticles);
+        ArticleDiffCallback diffCallback = new ArticleDiffCallback(this.mArticles, newArticles);
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        this.articles.clear();
-        this.articles.addAll(newArticles);
+        this.mArticles.clear();
+        this.mArticles.addAll(newArticles);
 
         diffResult.dispatchUpdatesTo(this);
     }

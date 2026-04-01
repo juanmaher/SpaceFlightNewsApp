@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -73,8 +74,13 @@ public class ArticleDetailFragment extends Fragment {
                 Glide.with(this).load(article.imageUrl).into(imageView);
 
                 v.findViewById(R.id.btn_open_url).setOnClickListener(view -> {
-                    CustomTabsIntent intent = new CustomTabsIntent.Builder()
+
+                    CustomTabColorSchemeParams defaultColors = new CustomTabColorSchemeParams.Builder()
                             .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.pastel_blue_medium))
+                            .build();
+
+                    CustomTabsIntent intent = new CustomTabsIntent.Builder()
+                            .setDefaultColorSchemeParams(defaultColors)
                             .build();
                     intent.launchUrl(requireContext(), Uri.parse(article.url));
                 });

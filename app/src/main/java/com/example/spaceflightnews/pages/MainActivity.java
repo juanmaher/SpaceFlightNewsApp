@@ -24,9 +24,9 @@ import com.example.spaceflightnews.ui.ArticleViewModel;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ArticleViewModel viewModel;
-    private ArticleAdapter adapter;
-    private LiveData<List<Article>> currentSubscription;
+    private ArticleViewModel mViewModel;
+    private ArticleAdapter mAdapter;
+    private LiveData<List<Article>> mCurrentSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +35,20 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ArticleAdapter();
-        recyclerView.setAdapter(adapter);
+        mAdapter = new ArticleAdapter();
+        recyclerView.setAdapter(mAdapter);
         setupAdapterClick();
 
         CompositionRoot compositionRoot = ((SpaceFlightApplication) getApplication()).getCompositionRoot();
-        viewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
+        mViewModel = new ViewModelProvider(this, compositionRoot.mFactory).get(ArticleViewModel.class);
 
         showRecentArticles();
 
         ProgressBar progressBar = findViewById(R.id.main_progress_bar);
-        viewModel.getArticlesStatus().observe(this, resource -> {
+        mViewModel.getArticlesStatus().observe(this, resource -> {
             if (resource == null) return;
 
-            switch (resource.status) {
+            switch (resource.mStatus) {
                 case LOADING:
                     progressBar.setVisibility(View.VISIBLE);
                     break;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.fetchArticles();
+        mViewModel.fetchArticles();
         setupSearchView();
     }
 
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAdapterClick() {
-        adapter.setOnItemClickListener(article -> {
+        mAdapter.setOnItemClickListener(article -> {
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) return;
 
             findViewById(R.id.main_list_container).setVisibility(View.GONE);
@@ -139,26 +139,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRecentArticles() {
-        if (currentSubscription != null) {
-            currentSubscription.removeObservers(this);
+        if (mCurrentSubscription != null) {
+            mCurrentSubscription.removeObservers(this);
         }
 
-        currentSubscription = viewModel.getRecentArticles();
-        currentSubscription.observe(this, articles -> {
-            adapter.setArticles(articles);
+        mCurrentSubscription = mViewModel.getRecentArticles();
+        mCurrentSubscription.observe(this, articles -> {
+            mAdapter.setArticles(articles);
         });
     }
 
     private void subscribeToSearch(String query) {
-        if (currentSubscription != null) {
-            currentSubscription.removeObservers(this);
+        if (mCurrentSubscription != null) {
+            mCurrentSubscription.removeObservers(this);
         }
 
         ProgressBar progressBar = findViewById(R.id.main_progress_bar);
-        viewModel.getArticlesStatus().observe(this, resource -> {
+        mViewModel.getArticlesStatus().observe(this, resource -> {
             if (resource == null) return;
 
-            switch (resource.status) {
+            switch (resource.mStatus) {
                 case LOADING:
                     progressBar.setVisibility(View.VISIBLE);
                     break;
@@ -174,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        currentSubscription = viewModel.searchArticles(query);
-        currentSubscription.observe(this, articles -> {
-            adapter.setArticles(articles);
+        mCurrentSubscription = mViewModel.searchArticles(query);
+        mCurrentSubscription.observe(this, articles -> {
+            mAdapter.setArticles(articles);
         });
     }
 }
